@@ -5,8 +5,8 @@ const nunjucks = require("nunjucks");
 
 const { sequelize } = require("./models");
 const indexRouter = require("./routes");
-// const usersRouter = require("./routes/users");
-// const commentsRouter = require("./routes/comments");
+const usersRouter = require("./routes/users");
+const commentsRouter = require("./routes/comments");
 
 const app = express();
 app.set("port", process.env.PORT || 3001);
@@ -17,6 +17,10 @@ nunjucks.configure("views", {
 });
 sequelize
     .sync({ force: false })
+    //force: false일 경우, Sequelize는 정의된 모델을 기반으로 데이터베이스에 테이블이 없으면 새로운 테이블을 생성합니다.
+    //이미 테이블이 존재하는 경우, 테이블을 삭제하거나 재생성하지 않고, 필요한 경우에만 테이블의 구조를 업데이트합니다.
+    //force: true는 데이터베이스에 이미 존재하는 모든 테이블을 삭제하고, 모델 정의에 따라 다시 생성합니다.
+    //즉, 기존 테이블이 있으면 그 테이블을 드롭(drop)한 후 새로 생성합니다.
     .then(() => {
         console.log("데이터베이스 연결 성공");
     })
@@ -30,8 +34,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/", indexRouter);
-// app.use("/users", usersRouter);
-// app.use("/comments", commentsRouter);
+app.use("/users", usersRouter);
+app.use("/comments", commentsRouter);
 
 app.use((req, res, next) => {
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

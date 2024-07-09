@@ -14,11 +14,12 @@ router.use((req, res, next) => {
 });
 router.use(
     session({
-        resave: false,
-        saveUninitialized: false,
+        resave: false, //모든 request마다 기존에 있던 session에 아무런 변경사항이 없을 시에도그 session을 다시 저장하는 옵션입니다.(매 request 마다 세션을 계속 다시 저장하는 것)
+        saveUninitialized: false, // empty session obj가 쌓이는 걸 방지해 서버 스토리지를 아낄 수 있습니다.
         secret: process.env.COOKIE_SECRET, //위의 cookieParser의 시크릿넘버와 같을 필요는 없지만 강사님은 보통 같게 한다고 한다.
         cookie: {
             httpOnly: true,
+            secure: false, //https적용할때 true로
         },
         name: "connect.sid",
     })
